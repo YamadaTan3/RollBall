@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 
 public class StageMove : MonoBehaviour
 {
+
     // 変数、関数
     // 変数 -> int,string　値を格納するための箱
     // データ型(int,string,InputAction)　+　変数名(num,name)
@@ -22,10 +23,11 @@ public class StageMove : MonoBehaviour
         
     }
 
+    public float threhild = 0.2f;
     // Update -> 毎フレームごと(0.1～0/3f)刻みに自動で実行される関数
     void Update()
     {
-        Debug.Log(moveInput.ReadValue<Vector2>());
+        //Debug.Log(moveInput.ReadValue<Vector2>());
 
         // A += B -> A = A + B
         //this.transform.localPosition -> このコードがアタッチされているオブジェクトの位置情報
@@ -38,7 +40,13 @@ public class StageMove : MonoBehaviour
         //moveInput.ReadValue<Vector2>.y => Y軸
         //Vector3 -> (X,Y,Z)
 
-        rotation = new Vector3( moveInput.ReadValue<Vector2>().y*threshold, 0, moveInput.ReadValue<Vector2>().x*threshold * -1);
-        this.transform.Rotate(rotation);
+        rotation = new Vector3(moveInput.ReadValue<Vector2>().y * threshold, 0, moveInput.ReadValue<Vector2>().x * threshold * -1);
+
+        //this.transform.Rotate(rotation);
+        //オイラー角に変換
+        Quaternion tilt = Quaternion.Euler(rotation.x, 0f, rotation.z);
+        this.gameObject.GetComponent<Rigidbody>().MoveRotation(
+            this.gameObject.GetComponent<Rigidbody>().transform.rotation * tilt
+                );
     }
 }
